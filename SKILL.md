@@ -59,7 +59,7 @@ The skill lives in `video-use/`. User footage lives wherever they put it. All se
 
 First-time install lives in `install.md` (clone, deps, ffmpeg, skill registration, API key). Don't re-run it every session; on cold start just verify:
 
-- `ELEVENLABS_API_KEY` resolves — either in the environment or in `.env` at the video-use repo root. If missing, ask the user to paste one and write it to `.env` (never to the user's `<videos_dir>`).
+- Before the first new transcription, tell the user that ElevenLabs Scribe requires their own `ELEVENLABS_API_KEY` and available account quota; API usage is charged to their account. No API key is bundled. Check for a non-empty key in `.env` at the video-use repo root or in the environment without printing it. The helper reads `.env` first, so an empty entry there must be filled or removed before relying on an environment variable. If missing, guide the user to copy `.env.example` to `.env` and enter the key in a local editor (never in chat or the user's `<videos_dir>`). Do not start transcription until configured. Reuse cached transcripts when available.
 - `ffmpeg` + `ffprobe` on PATH.
 - Python deps installed (`uv sync` or `pip install -e .` inside the repo).
 - Node.js + npm available if the session needs HyperFrames or Remotion slots. HyperFrames currently requires Node.js 22+.

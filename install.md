@@ -102,18 +102,19 @@ Scribe (ElevenLabs) does all transcription. Without a key, nothing transcribes.
     grep -q '^ELEVENLABS_API_KEY=..' ~/Developer/video-use/.env 2>/dev/null && echo "dotenv"
     ```
 
-2. If neither is set, ask the user exactly once:
+2. If neither is set, explain that a personal ElevenLabs API key and available account quota are required for transcription; usage is charged to the user's account. Guide the user to configure the key locally:
 
-    > I need an ElevenLabs API key for transcription (word-level timestamps, speaker diarization, filler tagging). Grab one at https://elevenlabs.io/app/settings/api-keys and paste it here — I'll write it to `~/Developer/video-use/.env`. Or if you already have it exported as `ELEVENLABS_API_KEY`, say "use env" and I'll skip.
-
-    When the user pastes a key, write it to `~/Developer/video-use/.env`:
+    > Create a key at https://elevenlabs.io/app/settings/api-keys. Copy `.env.example` to `.env` in the video-use repo root, then use a local editor to fill in `ELEVENLABS_API_KEY`. Do not paste the key into chat. You can also export `ELEVENLABS_API_KEY` in your shell; remove or fill any empty `.env` entry first because the helper reads `.env` before the environment.
 
     ```bash
-    printf 'ELEVENLABS_API_KEY=%s\n' "$KEY" > ~/Developer/video-use/.env
-    chmod 600 ~/Developer/video-use/.env
+    cd ~/Developer/video-use
+    # Only copy the template if .env does not already exist.
+    test -e .env || cp .env.example .env
+    chmod 600 .env
+    # Open .env in your local editor and fill in your own key.
     ```
 
-    Never echo the key back in tool output. Never commit `.env`.
+    Do not echo the key in tool output or commit `.env`. A missing or empty key blocks new transcription; it does not prevent local editing with existing transcripts.
 
 3. Sanity check with a cheap, quota-free call:
 
@@ -123,7 +124,7 @@ Scribe (ElevenLabs) does all transcription. Without a key, nothing transcribes.
       https://api.elevenlabs.io/v1/user
     ```
 
-    `200` means the key works. `401` means the user pasted a wrong/expired key — ask once more and stop. Anything else (network, 5xx), move on and verify during first real transcription.
+    `200` means the key works. `401` means the user pasted a wrong/expired key — ask the user to correct it locally and stop. Anything else (network, 5xx), move on and verify during first real transcription.
 
 ### 6. Verify end-to-end
 

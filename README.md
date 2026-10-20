@@ -10,6 +10,22 @@ Drop raw footage in a folder, chat with Claude Code, get `final.mp4` back. Works
 
 Cloud-hosted video-use is coming. [Join the waitlist at video-use.com](https://video-use.com?utm_source=github).
 
+## 使用前必须配置 API（Required API setup）
+
+**本项目不附带 API 密钥。首次转写前，请自行配置 ElevenLabs API；仅安装依赖不能完成语音转写。**
+
+1. 在 [ElevenLabs API Keys](https://elevenlabs.io/app/settings/api-keys) 创建自己的密钥。
+2. 在本仓库根目录执行 `cp .env.example .env`，用本地编辑器填写：
+
+   ```dotenv
+   ELEVENLABS_API_KEY=your_own_elevenlabs_api_key
+   ```
+
+   也可以设置同名环境变量。若 `.env` 中已有此变量，请先填写或删除空值，因为当前转写脚本优先读取 `.env`。
+3. 密钥仅保存在本地；不要发到聊天、Issue 或提交到 GitHub。`.env` 已被 Git 忽略，`.env.example` 仅提供空模板。
+
+ElevenLabs Scribe 用于语音转写，需有可用额度，调用费用由你自己的账户承担。未配置时先完成配置，再运行转写；FFmpeg 本地剪辑与已有转写缓存的复用不新增转写调用。运行 Claude Code、Codex 等助手还需准备对应平台的账号/额度。此仓库的基础剪辑流程没有内置数字人服务，另加数字人或云端生成服务时需单独配置对应 API。
+
 ## What it does
 
 - **Cuts out filler words** (`umm`, `uh`, false starts) and dead space between takes
@@ -25,12 +41,12 @@ Cloud-hosted video-use is coming. [Join the waitlist at video-use.com](https://v
 Paste into Claude Code, Codex, Hermes, Openclaw, or any agent with shell access:
 
 ```text
-Set up https://github.com/browser-use/video-use for me.
+Set up https://github.com/ziyetsui/video-use for me.
 
-Read install.md first to install this repo, wire up ffmpeg, register the skill with whichever agent you're running under, and set up the ElevenLabs API key — ask me to paste it when you need it. Then read SKILL.md for daily usage, and always read helpers/ because that's where the editing scripts live. After install, don't transcribe anything on your own — just tell me it's ready and wait for me to drop footage into a folder.
+Read install.md first to install this repo, wire up ffmpeg, register the skill with whichever agent you're running under, and set up the ElevenLabs API key — tell me how to enter it locally in .env; never ask me to paste secrets into chat. Then read SKILL.md for daily usage, and always read helpers/ because that's where the editing scripts live. After install, don't transcribe anything on your own — just tell me it's ready and wait for me to drop footage into a folder.
 ```
 
-The agent handles the clone, dependencies, skill registration, and prompts you once for your ElevenLabs API key (grab one at [elevenlabs.io/app/settings/api-keys](https://elevenlabs.io/app/settings/api-keys)).
+The agent handles the clone, dependencies, skill registration, and guides you to configure your own ElevenLabs API key locally (grab one at [elevenlabs.io/app/settings/api-keys](https://elevenlabs.io/app/settings/api-keys)).
 
 Then point your agent at a folder of raw takes:
 
@@ -53,7 +69,7 @@ If you'd rather do it by hand:
 
 ```bash
 # 1. Clone and symlink into your agent's skills directory
-git clone https://github.com/browser-use/video-use ~/Developer/video-use
+git clone https://github.com/ziyetsui/video-use ~/Developer/video-use
 ln -sfn ~/Developer/video-use ~/.claude/skills/video-use        # Claude Code
 # ln -sfn ~/Developer/video-use ~/.codex/skills/video-use       # Codex
 
